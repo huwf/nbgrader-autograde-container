@@ -15,8 +15,7 @@ echo "cp -R /home/instructor/user-submission/${1}/${2} /home/instructor/submitte
 cp -R /home/instructor/user-submission/${1}/${2} /home/instructor/submitted/${1}
 echo "ls -l /home/instructor/submitted/ 
 $(ls -l /home/instructor/submitted/)"
-echo "ls -l /home/instructor/submitted/user-1 
-$(ls -l /home/instructor/submitted/user-1)"
+
 # echo "submitted again: ls -al submitted/user-1 $(ls -al submitted/user-1)"
 nbgrader autograde ${2}
 # #/bin/bash

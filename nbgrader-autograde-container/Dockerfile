@@ -1,11 +1,15 @@
 FROM jupyterhub/systemuser
 
+# This bit installs the postgres client library
+RUN apt-get update && apt-get install -y libpq-dev gcc
+# need gcc to compile psycopg2
+RUN python -m pip install psycopg2
+RUN apt-get autoremove -y gcc
+
 RUN python -m pip install nbgrader
 RUN rm -rf /home/jovyan
 RUN useradd -ms /bin/bash instructor
 
-RUN nbgrader extension install --symlink --debug
-RUN nbgrader extension activate
 
 WORKDIR /home/instructor
 

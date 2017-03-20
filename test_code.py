@@ -11,9 +11,9 @@ import sys
 import glob
 
 SUBMISSION_DIR = '/srv/nbgrader/exchange/data_science/inbound'
-NBGRADER_DIR = '/home/huw/docker/nbgrader-autograde-container/data_science'
+NBGRADER_DIR = '/home/instructor/data_science'
 import os
-os.chdir(os.path.join(os.getcwd(), 'data_science'))
+os.chdir(os.path.join('/home', 'instructor', 'data_science'))
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -89,11 +89,11 @@ def autograde_docker(username, assignment_name, instructor_id):
     # '-v', '%s/gradebook.db:/home/instructor/gradebook.db' % NBGRADER_DIR,
     '-v', '%s/nbgrader_config.py:/home/instructor/nbgrader_config.py' % NBGRADER_DIR,
     '-v', '/home/huw/docker/nbgrader-autograde-container/data_science:/home/instructor/data_science',# % NBGRADER_DIR,
-    '-e', 'GRADEBOOK_DB=postgresql+psycopg2://nbgraderuser:U(^oB&~TUG@postgres_container:5432/gradebook',
+    '-e', 'GRADEBOOK_DB=postgresql+psycopg2://nbgraderuser:U7092SKDDFvp@postgres_container:5432/gradebook',
     'huwf/nbgrader-autograde-container',
-    'bash']
-    # '/autograde', username, assignment_name, str(instructor_id)]
-    run_cmd(listy, 'huw')
+    #'bash'
+    '/autograde', username, assignment_name, str(instructor_id)]
+    run_cmd(listy, 'root')
 
 
 if __name__ == '__main__':
@@ -102,10 +102,12 @@ if __name__ == '__main__':
     for assignment in os.listdir('/srv/nbgrader/exchange/data_science/outbound'):
         logger.info('Collecting assignments for %s' % assignment)
         for src in collect(assignment):
-            autograde_docker(src['username'], assignment, get_uid('huw'))
-            break
-            # shutil.move()
+            autograde_docker(src['username'], assignment, get_uid('instructor'))
+            print('src', src['filename'])
+            shutil.move('%s/%s' % (SUBMISSION_DIR, src['filename']), '%s/backup' % NBGRADER_DIR)
+            
         break
+
 
 
 

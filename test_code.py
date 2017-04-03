@@ -12,8 +12,13 @@ import glob
 
 SUBMISSION_DIR = '/srv/nbgrader/exchange/data_science/inbound'
 NBGRADER_DIR = '/home/instructor/data_science'
+ASSIGNMENT = sys.argv[1]
+print('ASSIGNMENT: ', ASSIGNMENT)
+
 import os
-os.chdir(os.path.join('/home', 'instructor', 'data_science'))
+os.chdir(os.path.join('/home', 'instructor'))#, 'data_science'))
+
+
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -59,7 +64,7 @@ def collect(assignment_name, exchange='/srv/nbgrader/exchange'):
     log_buff = StringIO()
     app.init_logging(logging.StreamHandler, [log_buff], color=False, subapps=True)
     app.course_id = 'data_science'
-    app.initialize(['%s' % assignment_name, '--TransferApp.exchange_directory=%s' % exchange, '--debug'])
+    app.initialize(['%s' % assignment_name, '--TransferApp.exchange_directory=%s' % exchange, '--update', '--debug'])
     app.start()
     out = log_buff.getvalue()
     log_buff.close()
@@ -67,8 +72,6 @@ def collect(assignment_name, exchange='/srv/nbgrader/exchange'):
     app = None
 
     return src_records
-
-
 
 def autograde_docker(username, assignment_name, instructor_id):
     # This function expects that there is a directory already in autograded/
@@ -99,16 +102,13 @@ def autograde_docker(username, assignment_name, instructor_id):
 if __name__ == '__main__':
     if not os.path.exists('%s/backup' % NBGRADER_DIR):
         os.makedirs('%s/backup' % NBGRADER_DIR)
-    for assignment in os.listdir('/srv/nbgrader/exchange/data_science/outbound'):
-        logger.info('Collecting assignments for %s' % assignment)
-        for src in collect(assignment):
-            autograde_docker(src['username'], assignment, get_uid('instructor'))
-            print('src', src['filename'])
-            shutil.move('%s/%s' % (SUBMISSION_DIR, src['filename']), '%s/backup' % NBGRADER_DIR)
-            
-        break
-
-
-
+#    for assignment in os.listdir('/srv/nbgrader/exchange/data_science/outbound'):
+#        logger.info('Collecting assignments for %s' % assignment)
+    for src in collect(ASSIGNMENT):
+        print('src', src)
+        autograde_docker(src['username'], ASSIGNMENT, get_uid('instructor'))
+        print('src', src['filename'])
+        shutil.move('%s/%s' % (SUBMISSION_DIR, src['filename']), '%s/backup' % NBGRADER_DIR)
+        
 
 

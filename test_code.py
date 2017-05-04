@@ -16,7 +16,7 @@ ASSIGNMENT = sys.argv[1]
 print('ASSIGNMENT: ', ASSIGNMENT)
 
 import os
-os.chdir(os.path.join('/home', 'instructor'))#, 'data_science'))
+os.chdir(os.path.join('/home', 'instructor', 'data_science'))
 
 
 
